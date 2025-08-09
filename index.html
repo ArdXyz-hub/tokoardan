@@ -245,22 +245,25 @@ body {
             
             <div class="contact-form-wrapper">
                 <div class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Neural ID</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your designation" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Quantum Address</label>
-                        <input type="email" id="email" name="email" placeholder="your.id@nexusflow.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">Transmission</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Compose your message to the network..." required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary btn-submit">Transmit Message</button>
+                    <form action="https://formspree.io/f/mdkdykad" method="POST" class="contact-form">
+    <div class="form-group">
+        <label for="name">Neural ID</label>
+        <input type="text" id="name" name="name" placeholder="Enter your designation" required>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Quantum Address</label>
+        <input type="email" id="email" name="email" placeholder="your.id@nexusflow.com" required>
+    </div>
+
+    <div class="form-group">
+        <label for="message">Transmission</label>
+        <textarea id="message" name="message" rows="5" placeholder="Compose your message to the network..." required></textarea>
+    </div>
+
+    <button type="submit" class="btn-primary btn-submit">Transmit Message</button>
+</form>
+
                 </div>
             </div>
         </div>
@@ -289,6 +292,7 @@ body {
 </body>
 
 </html>
+
 
 
 
