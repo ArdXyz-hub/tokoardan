@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kotak Surat</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff6b6b;
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.03);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Arial";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, #071426 0%, #0b1830 100%);
+      color: #e6eef6;
+      padding:20px;
+    }
+
+    .card{
+      width:100%;
+      max-width:720px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), var(--glass));
+      border-radius:14px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(2,8,23,0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    h1{
+      margin:0 0 6px 0;
+      font-size:20px;
+      letter-spacing:0.2px;
+    }
+    p.lead{
+      margin:0 0 18px 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    form .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    form label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color:inherit;
+      font-size:14px;
+      outline:none;
+    }
+    textarea{ min-height:130px; resize:vertical; }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    button[type="submit"]{
+      background: linear-gradient(90deg,var(--accent), #ff8f6b);
+      color:#081020;
+      font-weight:700;
+      padding:10px 16px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(255,107,107,0.12);
+    }
+    button[disabled]{opacity:0.6; cursor:not-allowed}
+
+    .note { font-size:13px; color:var(--muted); }
+    .status {
+      margin-left:auto;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    /* responsive */
+    @media (max-width:600px){
+      form .row{ grid-template-columns: 1fr; }
+      .status{ margin-left:0; width:100%; margin-top:8px; }
+    }
+
+    .msg {
+      margin-top:14px;
+      padding:12px;
+      border-radius:10px;
+      font-size:14px;
+      display:none;
+    }
+    .msg.success{ background: rgba(22,140,82,0.12); color: #bff2d6; border:1px solid rgba(22,140,82,0.18); display:block; }
+    .msg.error{ background: rgba(196,70,70,0.12); color:#ffd7d7; border:1px solid rgba(196,70,70,0.16); display:block; }
+  </style>
+</head>
+<body>
+
+  <main class="card" role="main" aria-labelledby="title">
+    <header>
+      <h1 id="title">Kotak Saran</h1>
+      <p class="lead">Kirimkan saran, ide, atau kritik — kami menghargainya. Isi form di bawah, lalu klik kirim.</p>
+    </header>
+
+    <form id="suggestForm" action="https://formspree.io/f/mrblrbqe" method="POST">
+      <div class="row">
+        <div>
+          <label for="name">Nama (opsional)</label>
+          <input id="name" name="name" type="text" placeholder="Nama Anda" />
+        </div>
+
+        <div>
+          <label for="email">Email (opsional, untuk balasan)</label>
+          <input id="email" name="email" type="email" placeholder="email@contoh.com" />
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label for="category">Kategori</label>
+        <select id="category" name="category" aria-label="Kategori saran">
+          <option value="umum">Umum</option>
+          <option value="fitur">Fitur / Pengembangan</option>
+          <option value="bug">Laporan Bug</option>
+          <option value="lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="message">Pesan / Saran</label>
+        <textarea id="message" name="message" placeholder="Tulis saran, kritik, atau ide Anda di sini..." required></textarea>
+      </div>
+
+      <!-- optional hidden inputs for Formspree behavior -->
+      <!-- untuk mengubah subject atau redirect, bisa ditambah input tersembunyi -->
+      <!-- <input type="hidden" name="_subject" value="Saran baru dari website"> -->
+      <!-- <input type="hidden" name="_next" value="https://example.com/thanks.html"> -->
+
+      <div class="actions" style="margin-top:14px;">
+        <button type="submit" id="submitBtn">Kirim Saran</button>
+        <div class="note">Terima kasih atas waktumu ✨</div>
+        <div class="status" id="formStatus" aria-live="polite"></div>
+      </div>
+
+      <div id="msgBox" class="msg" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <script>
+    (function(){
+      const form = document.getElementById('suggestForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const msgBox = document.getElementById('msgBox');
+      const statusEl = document.getElementById('formStatus');
+
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        msgBox.style.display = 'none';
+        submitBtn.disabled = true;
+        statusEl.textContent = 'Mengirim...';
+
+        const data = new FormData(form);
+
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: data
+          });
+
+          if (res.ok) {
+            // sukses
+            msgBox.className = 'msg success';
+            msgBox.textContent = 'Terima kasih! Saranmu telah terkirim.';
+            msgBox.style.display = 'block';
+            form.reset();
+            statusEl.textContent = 'Terkirim ✓';
+          } else {
+            // Formspree mengembalikan error
+            const err = await res.json().catch(()=>null);
+            msgBox.className = 'msg error';
+            msgBox.textContent = (err && err.error) ? 'Error: ' + err.error : 'Gagal mengirim. Silakan coba lagi nanti.';
+            msgBox.style.display = 'block';
+            statusEl.textContent = 'Gagal';
+          }
+        } catch (error) {
+          msgBox.className = 'msg error';
+          msgBox.textContent = 'Tidak dapat terhubung. Periksa koneksi internetmu.';
+          msgBox.style.display = 'block';
+          statusEl.textContent = 'Gagal';
+        } finally {
+          submitBtn.disabled = false;
+          setTimeout(()=>statusEl.textContent = '', 3500);
+        }
+      });
+    })();
+  </script>
+<a href="https://tokoardanwithcoffe.webhop.me" class="btn-kembali-fixed">
+    </span>KEMBALI
+</a>
+
+<style>
+.btn-kembali-fixed {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.2s ease, color 0.2s ease;
+    z-index: 1000;
+}
+.btn-kembali-fixed:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+</style>
+<style>
+/* tambahkan di bagian atas style */
+@font-face {
+    font-family: 'CustomBold';
+    src: url('bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* ganti font di seluruh halaman */
+:root {
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#ff6b6b;
+    --muted:#9aa4b2;
+    --glass: rgba(255,255,255,0.03);
+    font-family: 'CustomBold', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Arial";
+}
+</style>
+
+</body>
+</html>
