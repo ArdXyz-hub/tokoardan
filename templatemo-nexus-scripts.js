@@ -393,7 +393,7 @@ https://templatemo.com/tm-594-nexus-flow
         });
 
         // Random cyber text effects
-        const cyberTexts = ['CONNECTING...', 'NEURAL LINK ESTABLISHED', 'QUANTUM SYNC ACTIVE', 'REALITY MATRIX LOADED'];
+        const cyberTexts = ['CONNECTING...', 'TERIMAKASIH TELAH SUPPORT', 'PUBLIC WEBSITE', 'JANGAN LUPA ISTIRAHAT'];
         
         setInterval(() => {
             const randomText = cyberTexts[Math.floor(Math.random() * cyberTexts.length)];
@@ -458,4 +458,5 @@ https://templatemo.com/tm-594-nexus-flow
                     }, 3000);
                 }, 2000);
             }
+
         });
